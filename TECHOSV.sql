@@ -893,10 +893,6 @@ CREATE LOGIN login_campo
 WITH PASSWORD = 'CampoFuerte#2025',
      CHECK_POLICY = OFF;
 
-CREATE LOGIN login_reportes
-WITH PASSWORD = 'ReporteFuerte#2025',
-     CHECK_POLICY = OFF;
-
 CREATE LOGIN login_powerbi
 WITH PASSWORD = 'PowerBI#2025',
      CHECK_POLICY = OFF;
