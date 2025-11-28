@@ -1,5 +1,5 @@
 ------------------------------------------------------------
--- 1. Creaci髇 de base de datos
+-- 1. Creaci贸n de base de datos
 ------------------------------------------------------------
 CREATE DATABASE TECHOSV;
 GO
@@ -8,20 +8,20 @@ USE TECHOSV;
 GO
 
 ------------------------------------------------------------
--- 2. Creaci髇 de esquemas
+-- 2. Creaci贸n de esquemas
 ------------------------------------------------------------
-CREATE SCHEMA cat;   -- cat醠ogos (departamento, municipio, etc.)
+CREATE SCHEMA cat;   -- cat谩logos (departamento, municipio, etc.)
 GO
 
 CREATE SCHEMA core;  -- entidades operativas (donante, proyecto, etc.)
 GO
 
-CREATE SCHEMA seg;   -- reservado para tablas de auditor韆 / seguridad
+CREATE SCHEMA seg;   -- reservado para tablas de auditor铆a / seguridad
 GO
 
 
 ------------------------------------------------------------
--- 3. Tablas de cat醠ogo (esquema cat)
+-- 3. Tablas de cat谩logo (esquema cat)
 ------------------------------------------------------------
 
 CREATE TABLE cat.Departamento (
@@ -377,7 +377,7 @@ INSERT INTO cat.EstadoProyecto (Nombre) VALUES
 ('Finalizado');
 GO
 ------------------------------------------------------------
--- Donantes (Empresas y personas salvadore馻s)
+-- Donantes (Empresas y personas salvadore帽as)
 ------------------------------------------------------------
 INSERT INTO core.Donante (Nombre, Email, Telefono, TipoDonanteId) VALUES
 ('Super Selectos S.A. de C.V.', 'donaciones@superselectos.com', '2221-0000',
@@ -968,7 +968,7 @@ GRANT INSERT, UPDATE, DELETE ON core.Financiamiento TO rol_coordinador_proyecto;
 
 -- REGISTRO DE DONACIONES
 
--- Lectura de cat醠ogos y contexto
+-- Lectura de cat谩logos y contexto
 GRANT SELECT ON cat.Departamento         TO rol_registro_donacion;
 GRANT SELECT ON cat.Municipio            TO rol_registro_donacion;
 GRANT SELECT ON cat.Comunidad            TO rol_registro_donacion;
@@ -989,7 +989,7 @@ GRANT SELECT, INSERT, UPDATE ON core.Donacion TO rol_registro_donacion;  -- corr
 
 -- TRABAJO DE CAMPO
 
--- Necesitan contexto geogr醘ico y proyectos
+-- Necesitan contexto geogr谩fico y proyectos
 GRANT SELECT ON cat.Departamento TO rol_trabajo_campo;
 GRANT SELECT ON cat.Municipio    TO rol_trabajo_campo;
 GRANT SELECT ON cat.Comunidad    TO rol_trabajo_campo;
@@ -1037,7 +1037,7 @@ ADD MEMBER usuario_powerbi;
 GO
 
 ------------------------------------------------------------
--- TABLA GENERAL DE AUDITOR虯
+-- TABLA GENERAL DE AUDITOR脥A
 ------------------------------------------------------------
 USE TECHOSV;
 GO
@@ -1048,7 +1048,7 @@ CREATE TABLE seg.AuditoriaCambios (
     Operacion CHAR(1) NOT NULL,          -- I = Insert, U = Update, D = Delete
     ClavePrincipal NVARCHAR(200) NOT NULL, -- PK del registro afectado (en texto)
     ValoresAnteriores NVARCHAR(MAX) NULL, -- Estado antes del cambio
-    ValoresNuevos NVARCHAR(MAX) NULL,     -- Estado despu閟 del cambio
+    ValoresNuevos NVARCHAR(MAX) NULL,     -- Estado despu茅s del cambio
     UsuarioSQL NVARCHAR(128) NOT NULL DEFAULT SUSER_SNAME(),
     Fecha DATETIME NOT NULL DEFAULT GETDATE(),
     Host NVARCHAR(128) NULL DEFAULT HOST_NAME()
@@ -1056,7 +1056,7 @@ CREATE TABLE seg.AuditoriaCambios (
 GO
 
 ------------------------------------------------------------
--- TRIGGER DE AUDITOR虯: core.Donacion
+-- TRIGGER DE AUDITOR脥A: core.Donacion
 ------------------------------------------------------------
 
 CREATE OR ALTER TRIGGER core.trg_Audit_Donacion   -- ? esquema core, no seg
@@ -1116,7 +1116,7 @@ END;
 GO
 
 ------------------------------------------------------------
--- TRIGGER DE AUDITOR虯: core.Financiamiento
+-- TRIGGER DE AUDITOR脥A: core.Financiamiento
 ------------------------------------------------------------
 CREATE OR ALTER TRIGGER core.trg_Audit_Financiamiento
 ON core.Financiamiento
@@ -1166,7 +1166,7 @@ END;
 GO
 
 ------------------------------------------------------------
--- TRIGGER DE AUDITOR虯: core.Proyecto
+-- TRIGGER DE AUDITOR脥A: core.Proyecto
 ------------------------------------------------------------
 CREATE OR ALTER TRIGGER core.trg_Audit_Proyecto
 ON core.Proyecto
@@ -1221,7 +1221,7 @@ BEGIN
 END;
 GO
 
--- Historial de cambios de una donaci髇 espec韋ica
+-- Historial de cambios de una donaci贸n espec铆fica
 SELECT *
 FROM seg.AuditoriaCambios
 WHERE Tabla = 'core.Donacion'
@@ -1237,7 +1237,7 @@ WHERE Tabla = 'core.Proyecto'
 ORDER BY Fecha DESC;
 GO
 
--- 趌timos 20 cambios en toda la BD
+-- 脷ltimos 20 cambios en toda la BD
 SELECT TOP 20 *
 FROM seg.AuditoriaCambios
 ORDER BY Fecha DESC;
@@ -1277,7 +1277,7 @@ EXEC sp_add_jobstep
     @subsystem = 'TSQL',
     @command = '
         BACKUP DATABASE TECHOSV
-        TO DISK = ''C:\Backups\TECHOSV_Full.bak''
+        TO DISK = 'C:\Backups\TECHOSV_Full.bak'
         WITH INIT, COMPRESSION;',
     @retry_attempts = 3,
     @retry_interval = 5;
@@ -1319,7 +1319,7 @@ EXEC sp_add_jobstep
     @subsystem = 'TSQL',
     @command = '
         BACKUP DATABASE TECHOSV
-        TO DISK = ''C:\Backups\TECHOSV_Diferencial.bak''
+        TO DISK = 'C:\Backups\TECHOSV_Diferencial.bak'
         WITH DIFFERENTIAL, COMPRESSION;',
     @retry_attempts = 3,
     @retry_interval = 5;
@@ -1328,7 +1328,7 @@ GO
 EXEC sp_add_schedule
     @schedule_name = 'Backup_Diario',
     @freq_type = 4,               -- diario
-    @freq_interval = 1,           -- cada 1 d韆 (todos los d韆s)
+    @freq_interval = 1,           -- cada 1 d铆a (todos los d铆as)
     @active_start_time = 020000;  -- 02:00 AM
 GO
 
@@ -1359,7 +1359,7 @@ EXEC sp_add_jobstep
     @subsystem = 'TSQL',
     @command = '
         BACKUP LOG TECHOSV
-        TO DISK = ''C:\Backups\TECHOSV_Log.trn''
+        TO DISK = 'C:\Backups\TECHOSV_Log.trn'
         WITH COMPRESSION;',
     @retry_attempts = 3,
     @retry_interval = 5;
@@ -1370,7 +1370,7 @@ GO
 EXEC sp_add_schedule
     @schedule_name = 'Backup_Log_Horario',
     @freq_type = 4,                 -- diario
-    @freq_interval = 1,             -- todos los d韆s
+    @freq_interval = 1,             -- todos los d铆as
     @freq_subday_type = 8,          -- cada X horas
     @freq_subday_interval = 1,      -- cada 1 hora
     @active_start_time = 000000;    -- 00:00
@@ -1390,7 +1390,7 @@ GO
 
 
 ------------------------------------------------------------
--- Rendimiento (consultas avanzadas + funciones ventana + 韓dices)
+-- Rendimiento (consultas avanzadas + funciones ventana + 铆ndices)
 ------------------------------------------------------------
 
 --Indices
@@ -1398,10 +1398,10 @@ USE TECHOSV;
 GO
 
 ------------------------------------------------------------
--- 蚇DICES SOBRE CLAVES FOR罭EAS Y CAMPOS DE CONSULTA
+-- 脥NDICES SOBRE CLAVES FOR脕NEAS Y CAMPOS DE CONSULTA
 ------------------------------------------------------------
 
--- Donaci髇: b鷖quedas por Donante, M閠odo y fecha
+-- Donaci贸n: b煤squedas por Donante, M茅todo y fecha
 CREATE INDEX IX_Donacion_DonanteId
 ON core.Donacion (DonanteId);
 
@@ -1422,11 +1422,11 @@ ON core.Financiamiento (Fecha);
 CREATE INDEX IX_Proyecto_EstadoId
 ON core.Proyecto (EstadoId);
 
--- BeneficiarioProyecto: b鷖quedas por proyecto
+-- BeneficiarioProyecto: b煤squedas por proyecto
 CREATE INDEX IX_BeneficiarioProyecto_ProyectoId
 ON core.BeneficiarioProyecto (ProyectoId);
 
--- Beneficiario: b鷖quedas por comunidad (reportes territoriales)
+-- Beneficiario: b煤squedas por comunidad (reportes territoriales)
 CREATE INDEX IX_Beneficiario_Comunidad
 ON core.Beneficiario (FK_Comunidad);
 GO
@@ -1574,13 +1574,13 @@ GROUP BY EstadoId;
 --  JUNIO 2024
 -----------------------------
 
--- Donaci髇 13 (Usado = 2000)
+-- Donaci贸n 13 (Usado = 2000)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (13, 1, '2024-06-12', 1200),
 (13, 3, '2024-06-22', 800);
 
--- Donaci髇 14 (Usado = 1200)
+-- Donaci贸n 14 (Usado = 1200)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (14, 2, '2024-06-18', 600),
@@ -1591,7 +1591,7 @@ VALUES
 --  JULIO 2024
 -----------------------------
 
--- Donaci髇 15 (Usado = 2500)
+-- Donaci贸n 15 (Usado = 2500)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (15, 2, '2024-07-08', 1500),
@@ -1602,7 +1602,7 @@ VALUES
 --  AGOSTO 2024
 -----------------------------
 
--- Donaci髇 16 (Usado = 1500)
+-- Donaci贸n 16 (Usado = 1500)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (16, 1, '2024-08-05', 800),
@@ -1613,7 +1613,7 @@ VALUES
 --  SEPTIEMBRE 2024
 -----------------------------
 
--- Donaci髇 17 (Usado = 1800)
+-- Donaci贸n 17 (Usado = 1800)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (17, 5, '2024-09-10', 1000),
@@ -1624,7 +1624,7 @@ VALUES
 --  OCTUBRE 2024
 -----------------------------
 
--- Donaci髇 18 (Usado = 1200)
+-- Donaci贸n 18 (Usado = 1200)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (18, 3, '2024-10-07', 600),
@@ -1635,7 +1635,7 @@ VALUES
 --  MAYO 2024 (Caso especial)
 -----------------------------
 
--- Donaci髇 19 (Usado = 2200)
+-- Donaci贸n 19 (Usado = 2200)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (19, 4, '2024-05-12', 1200),
@@ -1646,7 +1646,7 @@ VALUES
 --  ABRIL 2024
 -----------------------------
 
--- Donaci髇 20 (Usado = 1400)
+-- Donaci贸n 20 (Usado = 1400)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (20, 2, '2024-04-08', 700),
@@ -1657,7 +1657,7 @@ VALUES
 --  MARZO 2024
 -----------------------------
 
--- Donaci髇 21 (Usado = 2300)
+-- Donaci贸n 21 (Usado = 2300)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (21, 1, '2024-03-14', 1200),
@@ -1668,7 +1668,7 @@ VALUES
 --  FEBRERO 2024
 -----------------------------
 
--- Donaci髇 22 (Usado = 1500)
+-- Donaci贸n 22 (Usado = 1500)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (22, 5, '2024-02-11', 800),
@@ -1679,13 +1679,13 @@ VALUES
 --  NOVIEMBRE 2024
 -----------------------------
 
--- Donaci髇 23 (Usado = 1800)
+-- Donaci贸n 23 (Usado = 1800)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (23, 5, '2024-11-09', 1000),
 (23, 7, '2024-11-20', 800);
 
--- Donaci髇 24 (Usado = 1200)
+-- Donaci贸n 24 (Usado = 1200)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (24, 1, '2024-11-14', 600),
@@ -1696,13 +1696,13 @@ VALUES
 --  DICIEMBRE 2024
 -----------------------------
 
--- Donaci髇 25 (Usado = 2100)
+-- Donaci贸n 25 (Usado = 2100)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (25, 4, '2024-12-06', 1100),
 (25, 2, '2024-12-19', 1000);
 
--- Donaci髇 26 (Usado = 1500)
+-- Donaci贸n 26 (Usado = 1500)
 INSERT INTO core.Financiamiento (DonacionId, ProyectoId, Fecha, Desembolso)
 VALUES
 (26, 3, '2024-12-10', 800),
@@ -1718,7 +1718,7 @@ GROUP BY d.DonacionId, d.Monto, d.Usado
 ORDER BY d.DonacionId;
 
 ------------------------------------------------------------
---  VERIFICACI覰 FINAL
+--  VERIFICACI脫N FINAL
 ------------------------------------------------------------
 
 SELECT d.DonacionId,
